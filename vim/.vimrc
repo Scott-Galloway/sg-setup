@@ -55,3 +55,5 @@ colo molokai
 syntax on
 
 autocmd vimenter * NERDTree
+
+let NERDTreeShowHidden=1
