@@ -10,10 +10,10 @@ __ROOT="$(cd "$(dirname "${__DIR}")" && pwd)"
 __FILE="$(__DIR)/$(basename "${BASH_SOURCE[0]}")"
 __BASE="$(basename ${__FILE} .sh)"
 
-apt-get -y install git screen vim curl
+apt-get -y install git screen vim curl dconf
 
 #Run git config script
-"${__DIR}"/git.sh
+"$(__DIR)"/git.sh
 
 #replace .vim files
 cp -r "$(__DIR)"/vim/ ~/
@@ -30,5 +30,12 @@ git clone https://github.com/scrooloose/nerdtree.get
 
 #setup screenrc
 cp "$(__DIR)"/screen/.screenrc ~/
+
+#load custom gnome-terminal profile 
+#should check this later to make sure desktop is being run not server and gnome is the desk-env
+
+dconf load "$(__DIR)"/gnome-terminal-dconf.profile
+
+cp "$(__DIR)"/.config/ ~/
 
 exit 0
