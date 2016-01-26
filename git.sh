@@ -8,7 +8,7 @@ set -o pipefail
 
 __DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 __ROOT="$(cd "$(dirname "${__DIR}")" && pwd)"
-__FILE="$(__DIR)/$(basename "${BASH_SOURCE[0]}")"
+__FILE="${__DIR}/$(basename "${BASH_SOURCE[0]}")"
 __BASE="$(basename ${__FILE} .sh)"
 
 ##Setup Git variables
