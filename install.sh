@@ -1,4 +1,4 @@
-#!/usr/bin?env_bash
+#!/usr/bin/env bash
 #Scott Galloway environment setup
 
 set -o errexit
@@ -10,13 +10,14 @@ __ROOT="$(cd "$(dirname "${__DIR}")" && pwd)"
 __FILE="$(__DIR)/$(basename "${BASH_SOURCE[0]}")"
 __BASE="$(basename ${__FILE} .sh)"
 
-apt-get -y install git screen vim curl dconf
+sudo apt-get -y install git screen vim curl dconf
 
 #Run git config script
 "$(__DIR)"/git.sh
 
 #replace .vim files
-cp -r "$(__DIR)"/vim/ ~/
+cp -r "$(__DIR)"/vim/.vim/ ~/
+cp -r "$(__DIR)"/vim/.vimrc ~/
 
 #Install pathogen for VIM
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env_bash
+#!/usr/bin/env bash
 #Git Setup
 #Scott Galloway
 
