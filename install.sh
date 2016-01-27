@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #Scott Galloway environment setup
 
-set -o errexit
+#set -o errexit
 set -o nounset
 set -o pipefail
 # set -o xtrace
@@ -11,7 +11,30 @@ __ROOT="$(cd "$(dirname "${__DIR}")" && pwd)"
 __FILE="${__DIR}/$(basename "${BASH_SOURCE[0]}")"
 __BASE="$(basename ${__FILE} .sh)"
 
-#sudo apt-get -y install git screen vim curl dconf
+echo "running checks"
+
+git --version > /dev/null 2>&1
+git_exit="$(echo $?)"
+curl -V > /dev/null 2>&1
+curl_exit="$(echo $?)"
+vim --version > /dev/null 2>&1
+vim_exit="$(echo $?)"
+screen -v > /dev/null 2>&1
+screen_exit="$(echo $?)"
+
+comb_exit="${git_exit}${curl_exit}${vim_exit}${screen_exit}"
+
+if [ "${comb_exit}" -eq 0001 ]; then
+    :
+else    
+    echo "Some pre-requisite is not installed. Check below for non-zero exit \
+        code, correct the problem and try again."
+    echo "git: ${git_exit}"
+    echo "curl: ${curl_exit}"
+    echo "vim: ${vim_exit}"
+    echo "screen: ${screen_exit}"
+    exit 1
+fi
 
 #Run git config script
 "${__DIR}"/git.sh
@@ -37,8 +60,8 @@ cp "${__DIR}"/screen/.screenrc2 ~/
 #load custom gnome-terminal profile 
 #should check this later to make sure desktop is being run not server and gnome is the desk-env
 
-dconf load "${__DIR}"/gnome-terminal-dconf.profile
+#dconf load "${__DIR}"/gnome-terminal-dconf.profile
 
-cp "${__DIR}"/.config/ ~/
+#cp "${__DIR}"/.config/ ~/
 
 exit 0
