@@ -11,8 +11,6 @@ __ROOT="$(cd "$(dirname "${__DIR}")" && pwd)"
 __FILE="${__DIR}/$(basename "${BASH_SOURCE[0]}")"
 __BASE="$(basename ${__FILE} .sh)"
 
-echo "running checks"
-
 git --version > /dev/null 2>&1
 git_exit="$(echo $?)"
 curl -V > /dev/null 2>&1
