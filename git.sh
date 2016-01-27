@@ -5,6 +5,7 @@
 set -o errexit
 set -o nounset
 set -o pipefail
+# set -o xtrace
 
 __DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 __ROOT="$(cd "$(dirname "${__DIR}")" && pwd)"
