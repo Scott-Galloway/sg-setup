@@ -1,0 +1,9 @@
+shell -$SHELL
+term xterm-256color
+startup_message off
+
+split -v
+screen
+focus
+screen
+focus

@@ -18,5 +18,6 @@ git config --global user.name "Scott Galloway"
 git config --global user.email "gallowsa@gmail.com"
 git config --global credential.helper cache
 git config --global credential.helper 'cache timeout=3600'
+git config --global push.default matching
 
 exit 0

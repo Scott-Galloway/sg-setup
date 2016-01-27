@@ -37,8 +37,8 @@ cp "${__DIR}"/screen/.screenrc2 ~/
 #load custom gnome-terminal profile 
 #should check this later to make sure desktop is being run not server and gnome is the desk-env
 
-#dconf load "$(__DIR)"/gnome-terminal-dconf.profile
+dconf load "${__DIR}"/gnome-terminal-dconf.profile
 
-cp "$(__DIR)"/.config/ ~/
+cp "${__DIR}"/.config/ ~/
 
 exit 0
