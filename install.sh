@@ -60,10 +60,10 @@ cp "${__DIR}"/screen/.screenrc2 ~/
 
 # Load Ubuntu Desktop sepcific configurations 
 if [ "$(lsb_reslease -d)" = *"Ubuntu 15.10"* ]; then
-    cp -r "${__DIR}"/.config/autostart/gnome-terminal.desktop ~/.config/autostart/gnome-terminal.desktop
+    cp -r "${__DIR}"/config/autostart/gnome-terminal.desktop ~/.config/autostart/gnome-terminal.desktop
     dconf load /org/gnome/terminal/legacy/profiles:/ "${__DIR}"/gnome-terminal-dconf.profile
 elif [ "$(lsb_release -d)" = *"Ubuntu 14.04"* ]; then
-    cp -r "${__DIR}"/.config/autostart/gnome-terminal.desktop ~/.config/autostart/gnome-terminal.desktop
+    cp -r "${__DIR}"/config/autostart/gnome-terminal.desktop ~/.config/autostart/gnome-terminal.desktop
     dconf load /org/gnome/terminal/legacy/profiles:/ "${__DIR}"/gnome-terminal-dconf.profile
 else
     :

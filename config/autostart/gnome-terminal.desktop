@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Exec=gnome-terminal --tab-with-profile=screen --tab-with-profile=VI --maximize
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name[en_US]=Scott Terminal
+Name=Scott Terminal
+Comment[en_US]=
+Comment=
