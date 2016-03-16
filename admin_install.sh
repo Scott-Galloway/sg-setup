@@ -16,6 +16,8 @@ ub_ver="$(lsb_release -d | awk -F: '{print $2}')"
 
 if [ "${ub_ver}" == *"Ubuntu"* ]; then
 
+    add-apt-repository ppa:git-core/ppa
+    apt-get update
     apt-get -y install curl git vim screen
 
 else
