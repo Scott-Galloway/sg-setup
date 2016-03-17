@@ -14,11 +14,11 @@ ub_ver="$(lsb_release -d | awk -F: '{print $2}')"
 #rhel_ver="$(echo "$(uname -v)" | grep -i enterprise > /dev/null\
  #   2>&1; echo $?)"
 
-if [ "${ub_ver}" == *"Ubuntu"* ]; then
+if [[ "${ub_ver}" == *"Ubuntu"* ]]; then
 
     add-apt-repository ppa:git-core/ppa
     apt-get update
-    apt-get -y install curl git vim screen
+    apt-get -y install curl git vim screen shellcheck
 
 else
     echo "Unknown distribution, fix and re-code."

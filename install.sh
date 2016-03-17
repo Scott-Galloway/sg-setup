@@ -50,6 +50,7 @@ mkdir -p ~/.vim/autoload ~/.vim/bundle && \
 # Install NERDTree for VIM
 cd ~/.vim/bundle
 git clone https://github.com/scrooloose/nerdtree.git
+git clone https://github.com/scrooloose/syntastic.git
 
 # Setup screenrc
 cp "${__DIR}"/screen/.screenrc ~/
