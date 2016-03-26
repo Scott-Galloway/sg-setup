@@ -11,6 +11,9 @@ __DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 #__FILE="${__DIR}/$(basename "${BASH_SOURCE[0]}")"
 #__BASE="$(basename ${__FILE} .sh)"
 
+mkdir ~/bin
+mkdir ~/development
+
 git --version > /dev/null 2>&1
 git_exit="${?}"
 curl -V > /dev/null 2>&1
@@ -80,5 +83,17 @@ elif [[ "$(lsb_release -d)" = *"Ubuntu 14.04"* ]]; then
 else
     :
 fi
+
+# pull public repositories for tools
+if [[ -d ~/development/tools/ ]]; then
+    cd ~/development/tools
+    git pull
+else
+    git clone https://github.com/scott-galloway/tools.git
+fi
+
+# link tools to local bin
+
+~/development/tools/setup-links.sh
 
 exit 0
