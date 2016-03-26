@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Exec=gnome-terminal --tab-with-profile=screen --tab-with-profile=VI --maximize
+Exec=gnome-terminal --tab-with-profile=screen --tab-with-profile=VI --tab-with-profile=screen2 --maximize
 Hidden=false
 NoDisplay=false
 X-GNOME-Autostart-enabled=true
