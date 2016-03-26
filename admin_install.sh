@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #Scott Galloway environment setup for admin
 
-set -o erresit
+set -o errexit
 set -o nounset
 set -o pipefail
 # set -o xtrace

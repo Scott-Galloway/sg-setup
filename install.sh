@@ -7,18 +7,18 @@ set -o pipefail
 # set -o xtrace
 
 __DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-__ROOT="$(cd "$(dirname "${__DIR}")" && pwd)"
-__FILE="${__DIR}/$(basename "${BASH_SOURCE[0]}")"
-__BASE="$(basename ${__FILE} .sh)"
+#__ROOT="$(cd "$(dirname "${__DIR}")" && pwd)"
+#__FILE="${__DIR}/$(basename "${BASH_SOURCE[0]}")"
+#__BASE="$(basename ${__FILE} .sh)"
 
 git --version > /dev/null 2>&1
-git_exit="$(echo $?)"
+git_exit="${?}"
 curl -V > /dev/null 2>&1
-curl_exit="$(echo $?)"
+curl_exit="${?}"
 vim --version > /dev/null 2>&1
-vim_exit="$(echo $?)"
+vim_exit="${?}"
 screen -v > /dev/null 2>&1
-screen_exit="$(echo $?)"
+screen_exit="${?}"
 
 comb_exit="${git_exit}${curl_exit}${vim_exit}${screen_exit}"
 
@@ -49,8 +49,17 @@ mkdir -p ~/.vim/autoload ~/.vim/bundle && \
 
 # Install NERDTree for VIM
 cd ~/.vim/bundle
+if [[ -d nerdtree ]]; then
+    :
+else
 git clone https://github.com/scrooloose/nerdtree.git
-git clone https://github.com/scrooloose/syntastic.git
+fi
+
+if [[ -d syntastic ]]; then
+    :
+else
+git clone https://github.com/scrooloose/syntastic.git || true
+fi
 
 # Setup screenrc
 cp "${__DIR}"/screen/.screenrc ~/
@@ -60,12 +69,14 @@ cp "${__DIR}"/screen/.screenrc2 ~/
 #should check this later to make sure desktop is being run not server and gnome is the desk-env
 
 # Load Ubuntu Desktop sepcific configurations 
-if [ "$(lsb_reslease -d)" = *"Ubuntu 15.10"* ]; then
+if [[ "$(lsb_release -d)" = *"Ubuntu 15.10"* ]]; then
+    mkdir -p ~/.config/autostart/
     cp -r "${__DIR}"/config/autostart/gnome-terminal.desktop ~/.config/autostart/gnome-terminal.desktop
-    dconf load /org/gnome/terminal/legacy/profiles:/ "${__DIR}"/gnome-terminal-dconf.profile
-elif [ "$(lsb_release -d)" = *"Ubuntu 14.04"* ]; then
+    dconf load /org/gnome/terminal/legacy/profiles:/ < "${__DIR}"/gnome-terminal-dconf.profile
+elif [[ "$(lsb_release -d)" = *"Ubuntu 14.04"* ]]; then
+    mkdir -p ~/.config/autostart/
     cp -r "${__DIR}"/config/autostart/gnome-terminal.desktop ~/.config/autostart/gnome-terminal.desktop
-    dconf load /org/gnome/terminal/legacy/profiles:/ "${__DIR}"/gnome-terminal-dconf.profile
+    dconf load /org/gnome/terminal/legacy/profiles:/ <<< "${__DIR}"/gnome-terminal-dconf.profile
 else
     :
 fi
