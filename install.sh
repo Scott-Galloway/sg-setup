@@ -43,6 +43,7 @@ fi
 # Replace .vim files
 cp -r "${__DIR}"/vim/.vim/ ~/
 cp -r "${__DIR}"/vim/.vimrc ~/
+cp -r "${__DIR}"/vim/.vimrc_git ~/
 
 # Install pathogen for VIM
 
