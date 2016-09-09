@@ -1,6 +1,5 @@
 #!/usr/bin/env sh
-# Original Author: Jim McKibben
-# Modified By: Scott Galloway
+# Scott Galloway
 
 IPT=/sbin/iptables
 IP6T=/sbin/ip6tables
@@ -17,22 +16,22 @@ printf '%s\n' "Enabling Firewall"
 # Specialty IPs
 # These IPs will be allowed to ping
 # They won't have to worry about DDoS rulesets
-"${IPT}" -N ADMIN_IP
-"${IPT}" -A ADMIN_IP -p tcp -m multiport --sports \
-    "${SSHPORT}",25,80,443,10050,10051 -j ACCEPT
-"${IPT}" -A ADMIN_IP -p tcp -m multiport --dports \
-    "${SSHPORT}",25,80,443,10050,10051 -j ACCEPT
-"${IPT}" -A ADMIN_IP -i eth0 -p icmp --icmp-type destination-unreachable\
-    -m limit --limit  1/s --limit-burst 1 -j ACCEPT
-"${IPT}" -A ADMIN_IP -i eth0 -p icmp --icmp-type time-exceeded \
-    -m limit --limit  1/s --limit-burst 1 -j ACCEPT
-"${IPT}" -A ADMIN_IP -i eth0 -p icmp --icmp-type echo-reply -m limit \
-    --limit  1/s --limit-burst 1 -j ACCEPT
-"${IPT}" -A ADMIN_IP -i eth0 -p icmp --icmp-type echo-request -m limit \
-    --limit  1/s --limit-burst 1 -j ACCEPT
-"${IPT}" -A ADMIN_IP -i eth0 -p icmp -m limit --limit 1/s --limit-burst 1 \
-    -j LOG --log-prefix "iptables: PING-DROP: "
-"${IPT}" -A ADMIN_IP -i eth0 -p icmp -j DROP
+#"${IPT}" -N ADMIN_IP
+#"${IPT}" -A ADMIN_IP -p tcp -m multiport --sports \
+#    "${SSHPORT}",25,80,443,10050,10051 -j ACCEPT
+#"${IPT}" -A ADMIN_IP -p tcp -m multiport --dports \
+#    "${SSHPORT}",25,80,443 -j ACCEPT
+#"${IPT}" -A ADMIN_IP -i eth0 -p icmp --icmp-type destination-unreachable\
+#    -m limit --limit  1/s --limit-burst 1 -j ACCEPT
+#"${IPT}" -A ADMIN_IP -i eth0 -p icmp --icmp-type time-exceeded \
+#    -m limit --limit  1/s --limit-burst 1 -j ACCEPT
+#"${IPT}" -A ADMIN_IP -i eth0 -p icmp --icmp-type echo-reply -m limit \
+#    --limit  1/s --limit-burst 1 -j ACCEPT
+#"${IPT}" -A ADMIN_IP -i eth0 -p icmp --icmp-type echo-request -m limit \
+#    --limit  1/s --limit-burst 1 -j ACCEPT
+#"${IPT}" -A ADMIN_IP -i eth0 -p icmp -m limit --limit 1/s --limit-burst 1 \
+#    -j LOG --log-prefix "iptables: PING-DROP: "
+#"${IPT}" -A ADMIN_IP -i eth0 -p icmp -j DROP
 
 # DUMP
 "${IPT}" -N DUMP > /dev/null
@@ -140,24 +139,24 @@ printf '%s\n' "Enabling Firewall"
 "${IPT}" -A OUTPUT -o eth0 -d 240.0.0.0/8 -j DUMP
 
 # Allow certain inbound ICMP types (ping, traceroute..)
-"${IPT}" -A INPUT -i eth0 -p icmp --icmp-type destination-unreachable -m limit \
-    --limit  1/s --limit-burst 1 -j ACCEPT
-"${IPT}" -A INPUT -i eth0 -p icmp --icmp-type time-exceeded -m limit \
-    --limit  1/s --limit-burst 1 -j ACCEPT
-"${IPT}" -A INPUT -i eth0 -p icmp --icmp-type echo-reply -m limit \
-    --limit  1/s --limit-burst 1 -j ACCEPT
-"${IPT}" -A INPUT -i eth0 -p icmp --icmp-type echo-request -m limit \
-    --limit  1/s --limit-burst 1 -j ACCEPT
-"${IPT}" -A INPUT -i eth0 -p icmp -m limit --limit 1/s --limit-burst 1 \
-    -j LOG --log-prefix "iptables: PING-DROP: "
-"${IPT}" -A INPUT -i eth0 -p icmp -j DROP
+#"${IPT}" -A INPUT -i eth0 -p icmp --icmp-type destination-unreachable -m limit \
+#    --limit  1/s --limit-burst 1 -j ACCEPT
+#"${IPT}" -A INPUT -i eth0 -p icmp --icmp-type time-exceeded -m limit \
+#    --limit  1/s --limit-burst 1 -j ACCEPT
+#"${IPT}" -A INPUT -i eth0 -p icmp --icmp-type echo-reply -m limit \
+#    --limit  1/s --limit-burst 1 -j ACCEPT
+#"${IPT}" -A INPUT -i eth0 -p icmp --icmp-type echo-request -m limit \
+#    --limit  1/s --limit-burst 1 -j ACCEPT
+#"${IPT}" -A INPUT -i eth0 -p icmp -m limit --limit 1/s --limit-burst 1 \
+#    -j LOG --log-prefix "iptables: PING-DROP: "
+#"${IPT}" -A INPUT -i eth0 -p icmp -j DROP
 
 # Drop all packets to port 111 except those from localhost
-"${IPT}" -A INPUT ! -s 127.0.0.0/8 -p tcp --dport 111 -j REJECT \
-    --reject-with tcp-reset
+#"${IPT}" -A INPUT ! -s 127.0.0.0/8 -p tcp --dport 111 -j REJECT \
+#    --reject-with tcp-reset
 
 # kill off identd quick 
-"${IPT}" -A INPUT -i eth0 -p tcp --dport 113 -j REJECT --reject-with tcp-reset
+#"${IPT}" -A INPUT -i eth0 -p tcp --dport 113 -j REJECT --reject-with tcp-reset
 
 # Allow all established, related in
 "${IPT}" -A INPUT -i eth0 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
@@ -165,46 +164,46 @@ printf '%s\n' "Enabling Firewall"
 # Allows Inbound NEW DOS SSH Attack prevention (only 4 attempts by an IP 
 # every 3 minutes, drop the rest)
 # The ACCEPT at the end is necessary or, it wouldn't accept any connection
-"${IPT}" -A INPUT -i eth0 -p tcp -m tcp --dport "${SSHPORT}" -m conntrack \
-    --ctstate NEW -m recent --set --name DEFAULT --rsource
-"${IPT}" -A INPUT -i eth0 -p tcp -m tcp --dport "${SSHPORT}" -m conntrack \
-    --ctstate NEW -m recent --update --seconds 180 --hitcount 4 \
-    --name DEFAULT --rsource -j LOG -m limit --limit 20/m \
-    --log-prefix "iptables: SSH Attempt on port ${SSHPORT} : "
-"${IPT}" -A INPUT -i eth0 -p tcp -m tcp --dport "${SSHPORT}" -m conntrack \
-    --ctstate NEW -m recent --update --seconds 180 --hitcount 4 \
-    --name DEFAULT --rsource -j REJECT
-"${IPT}" -A INPUT -i eth0 -p tcp -m tcp --dport "${SSHPORT}" -m conntrack \
-    --ctstate NEW -j ACCEPT
+#"${IPT}" -A INPUT -i eth0 -p tcp -m tcp --dport "${SSHPORT}" -m conntrack \
+#    --ctstate NEW -m recent --set --name DEFAULT --rsource
+#"${IPT}" -A INPUT -i eth0 -p tcp -m tcp --dport "${SSHPORT}" -m conntrack \
+#    --ctstate NEW -m recent --update --seconds 180 --hitcount 4 \
+#    --name DEFAULT --rsource -j LOG -m limit --limit 20/m \
+#    --log-prefix "iptables: SSH Attempt on port ${SSHPORT} : "
+#"${IPT}" -A INPUT -i eth0 -p tcp -m tcp --dport "${SSHPORT}" -m conntrack \
+#    --ctstate NEW -m recent --update --seconds 180 --hitcount 4 \
+#    --name DEFAULT --rsource -j REJECT
+#"${IPT}" -A INPUT -i eth0 -p tcp -m tcp --dport "${SSHPORT}" -m conntrack \
+#    --ctstate NEW -j ACCEPT
 
 # Inbound ESTABLISHED SSH (out is in Multi-out)
-"${IPT}" -A INPUT -i eth0 -p tcp --dport "${SSHPORT}" -m conntrack \
-    --ctstate ESTABLISHED -j ACCEPT
+#"${IPT}" -A INPUT -i eth0 -p tcp --dport "${SSHPORT}" -m conntrack \
+#    --ctstate ESTABLISHED -j ACCEPT
 
 # DOS HTTP Attack prevention
 # Need re-evaluation, the current rates do not allow for WordPress image 
 # upload features
 # Plus, the timings reportedly slows down current site browsing to an unusable
 # level - hence the commented out "DROP"
-"${IPT}" -A INPUT -i eth0 -p tcp --dport 80 -m limit --limit 45/minute \
-    --limit-burst 300 -j ACCEPT
-"${IPT}" -A INPUT -i eth0 -p tcp --dport 80 -m hashlimit \
-    --hashlimit-upto 80/min --hashlimit-burst 800 --hashlimit-mode srcip \
-    --hashlimit-name http -j ACCEPT
-"${IPT}" -A INPUT -i eth0 -p tcp --dport 80 -j ACCEPT
-"${IPT}" -A INPUT -i eth0 -p tcp --dport 443 -m limit --limit 45/minute \
-    --limit-burst 300 -j ACCEPT
-"${IPT}" -A INPUT -i eth0 -p tcp --dport 443 -m hashlimit \
-    --hashlimit-upto 80/min --hashlimit-burst 800 --hashlimit-mode srcip \
-    --hashlimit-name https -j ACCEPT
-"${IPT}" -A INPUT -i eth0 -p tcp --dport 443 -j ACCEPT
+#"${IPT}" -A INPUT -i eth0 -p tcp --dport 80 -m limit --limit 45/minute \
+#    --limit-burst 300 -j ACCEPT
+#"${IPT}" -A INPUT -i eth0 -p tcp --dport 80 -m hashlimit \
+#    --hashlimit-upto 80/min --hashlimit-burst 800 --hashlimit-mode srcip \
+#    --hashlimit-name http -j ACCEPT
+#"${IPT}" -A INPUT -i eth0 -p tcp --dport 80 -j ACCEPT
+#"${IPT}" -A INPUT -i eth0 -p tcp --dport 443 -m limit --limit 45/minute \
+#    --limit-burst 300 -j ACCEPT
+#"${IPT}" -A INPUT -i eth0 -p tcp --dport 443 -m hashlimit \
+#    --hashlimit-upto 80/min --hashlimit-burst 800 --hashlimit-mode srcip \
+#    --hashlimit-name https -j ACCEPT
+#"${IPT}" -A INPUT -i eth0 -p tcp --dport 443 -j ACCEPT
 
 # Allow Ping from Outside to Inside
 "${IPT}" -A OUTPUT -p icmp --icmp-type echo-reply -j ACCEPT
 
 # Multi-out for inbound SSH, HTTP, and HTTPS
-"${IPT}" -A OUTPUT -o eth0 -p tcp -m multiport --sports "${SSHPORT}",80,443 \
-    -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+#"${IPT}" -A OUTPUT -o eth0 -p tcp -m multiport --sports "${SSHPORT}",80,443 \
+#    -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
 
 # Outbound SSH
 "${IPT}" -A INPUT -i eth0 -p tcp --sport "${SSHPORT}"  -m conntrack \
@@ -213,8 +212,8 @@ printf '%s\n' "Enabling Firewall"
     --ctstate NEW,ESTABLISHED -j ACCEPT
 
 # Allow inbound DNS
-"${IPT}" -A INPUT -i eth0 -p udp --sport 1024:65535 --dport 53 -j ACCEPT
-"${IPT}" -A OUTPUT -p udp --sport 53 --dport 1024:65535 -j ACCEPT
+#"${IPT}" -A INPUT -i eth0 -p udp --sport 1024:65535 --dport 53 -j ACCEPT
+#"${IPT}" -A OUTPUT -p udp --sport 53 --dport 1024:65535 -j ACCEPT
 
 # Allow outbound DNS
 "${IPT}" -A INPUT -i eth0 -p udp --dport 1024:65535 --sport 53 -j ACCEPT
@@ -227,10 +226,10 @@ printf '%s\n' "Enabling Firewall"
 "${IPT}" -A INPUT -i eth0 -p tcp --dport 1024:65535 --sport 443 -j ACCEPT
 
 # Inbound SMTP
-"${IPT}" -A INPUT -i eth0 -p tcp --sport 1024:65535 --dport 25 -m conntrack \
-    --ctstate NEW,ESTABLISHED -j ACCEPT
-"${IPT}" -A OUPUT -o eth0 -p tcp --sport 25 --dport 1024:65535 -m conntrack \
-    --ctstate NEW,ESTABLISHED -j ACCEPT
+#"${IPT}" -A INPUT -i eth0 -p tcp --sport 1024:65535 --dport 25 -m conntrack \
+#    --ctstate NEW,ESTABLISHED -j ACCEPT
+#"${IPT}" -A OUPUT -o eth0 -p tcp --sport 25 --dport 1024:65535 -m conntrack \
+#    --ctstate NEW,ESTABLISHED -j ACCEPT
 
 # # Outbound SMTP
 "${IPT}" -A INPUT -i eth0 -p tcp --sport 25 --dport 1024:65535 -m conntrack \
@@ -355,37 +354,37 @@ printf '%s\n' "Enabling Firewall"
 # Allows Inbound NEW DOS SSH Attack prevention (only 4 attempts by an IP 
 # every 3 minutes, drop the rest)
 # The ACCEPT at the end is necessary or, it wouldn't accept any connection
-"${IP6T}" -A INPUT -i eth0 -p tcp -m tcp --dport "${SSHPORT}" -m conntrack \
-    --ctstate NEW -m recent --set --name DEFAULT --rsource
-"${IP6T}" -A INPUT -i eth0 -p tcp -m tcp --dport "${SSHPORT}" -m conntrack \
-    --ctstate NEW -m recent --update --seconds 180 --hitcount 4 --name DEFAULT \
-    --rsource -j LOG -m limit --limit 20/m --log-prefix \
-    "ip6tables: SSH Attempt on port ${SSHPORT} : "
-"${IP6T}" -A INPUT -i eth0 -p tcp -m tcp --dport "${SSHPORT}" -m conntrack \
-    --ctstate NEW -m recent --update --seconds 180 --hitcount 4 --name DEFAULT \
-    --rsource -j REJECT
-"${IP6T}" -A INPUT -i eth0 -p tcp -m tcp --dport "${SSHPORT}" -m conntrack \
-    --ctstate NEW -j ACCEPT
+#"${IP6T}" -A INPUT -i eth0 -p tcp -m tcp --dport "${SSHPORT}" -m conntrack \
+#    --ctstate NEW -m recent --set --name DEFAULT --rsource
+#"${IP6T}" -A INPUT -i eth0 -p tcp -m tcp --dport "${SSHPORT}" -m conntrack \
+#    --ctstate NEW -m recent --update --seconds 180 --hitcount 4 --name DEFAULT \
+#    --rsource -j LOG -m limit --limit 20/m --log-prefix \
+#    "ip6tables: SSH Attempt on port ${SSHPORT} : "
+#"${IP6T}" -A INPUT -i eth0 -p tcp -m tcp --dport "${SSHPORT}" -m conntrack \
+#    --ctstate NEW -m recent --update --seconds 180 --hitcount 4 --name DEFAULT \
+#    --rsource -j REJECT
+#"${IP6T}" -A INPUT -i eth0 -p tcp -m tcp --dport "${SSHPORT}" -m conntrack \
+#    --ctstate NEW -j ACCEPT
 
 # Inbound ESTABLISHED SSH (out is in Multi-out)
-"${IP6T}" -A INPUT -i eth0 -p tcp --dport $SSHPORT -m conntrack \
-    --ctstate ESTABLISHED -j ACCEPT
+#"${IP6T}" -A INPUT -i eth0 -p tcp --dport $SSHPORT -m conntrack \
+#    --ctstate ESTABLISHED -j ACCEPT
 
 # DOS HTTP Attack prevention
 # For this, no one seems to be using IPv6 for legitimet browsing,
 # so I've been disabling it
-"${IP6T}" -A INPUT -i eth0 -p tcp --dport 80 -m limit --limit 45/minute \
-    --limit-burst 300 -j ACCEPT
-"${IP6T}" -A INPUT -i eth0 -p tcp --dport 80 -m hashlimit \
-    --hashlimit-upto 80/min --hashlimit-burst 800 --hashlimit-mode srcip \
-    --hashlimit-name http -j ACCEPT
-"${IP6T}" -A INPUT -i eth0 -p tcp --dport 80 -j DROP
-"${IP6T}" -A INPUT -i eth0 -p tcp --dport 443 -m limit --limit 45/minute \
-    --limit-burst 300 -j ACCEPT
-"${IP6T}" -A INPUT -i eth0 -p tcp --dport 443 -m hashlimit \
-    --hashlimit-upto 80/min --hashlimit-burst 800 --hashlimit-mode srcip \
-    --hashlimit-name https -j ACCEPT
-"${IP6T}" -A INPUT -i eth0 -p tcp --dport 443 -j DROP
+#"${IP6T}" -A INPUT -i eth0 -p tcp --dport 80 -m limit --limit 45/minute \
+#    --limit-burst 300 -j ACCEPT
+#"${IP6T}" -A INPUT -i eth0 -p tcp --dport 80 -m hashlimit \
+#    --hashlimit-upto 80/min --hashlimit-burst 800 --hashlimit-mode srcip \
+#    --hashlimit-name http -j ACCEPT
+#"${IP6T}" -A INPUT -i eth0 -p tcp --dport 80 -j DROP
+#"${IP6T}" -A INPUT -i eth0 -p tcp --dport 443 -m limit --limit 45/minute \
+#    --limit-burst 300 -j ACCEPT
+#"${IP6T}" -A INPUT -i eth0 -p tcp --dport 443 -m hashlimit \
+#    --hashlimit-upto 80/min --hashlimit-burst 800 --hashlimit-mode srcip \
+#    --hashlimit-name https -j ACCEPT
+#"${IP6T}" -A INPUT -i eth0 -p tcp --dport 443 -j DROP
 
 # Allow Ping from Outside to Inside
 "${IP6T}" -A OUTPUT -p icmp --icmp-type echo-reply -j ACCEPT
@@ -409,10 +408,10 @@ printf '%s\n' "Enabling Firewall"
 "${IP6T}" -A OUTPUT -p udp --dport 53 --sport 1024:65535 -j ACCEPT
 
 # Outbound HTTP, and HTTPS
-# "${IP6T}" -A OUTPUT -o eth0 -p tcp --dport 80 --sport 1024:65535 -j ACCEPT
-# "${IP6T}" -A INPUT -i eth0 -p tcp --dport 1024:65535 --sport 80 -j ACCEPT
-# "${IP6T}" -A OUTPUT -o eth0 -p tcp --dport 443 --sport 1024:65535 -j ACCEPT
-# "${IP6T}" -A INPUT -i eth0 -p tcp --dport 1024:65535 --sport 443 -j ACCEPT
+ "${IP6T}" -A OUTPUT -o eth0 -p tcp --dport 80 --sport 1024:65535 -j ACCEPT
+ "${IP6T}" -A INPUT -i eth0 -p tcp --dport 1024:65535 --sport 80 -j ACCEPT
+ "${IP6T}" -A OUTPUT -o eth0 -p tcp --dport 443 --sport 1024:65535 -j ACCEPT
+ "${IP6T}" -A INPUT -i eth0 -p tcp --dport 1024:65535 --sport 443 -j ACCEPT
 
 # Inbound SMTP
 #"${IP6T}" -A INPUT -i eth0 -p tcp --sport 1024:65535 --dport 25 -m conntrack \
@@ -421,10 +420,10 @@ printf '%s\n' "Enabling Firewall"
 #    --ctstate NEW,ESTABLISHED -j ACCEPT
 
 # Outbound SMTP
-#"${IP6T}" -A INPUT -i eth0 -p tcp --sport 25 --dport 1024:65535 -m conntrack \
-#    --ctstate NEW,ESTABLISHED -j ACCEPT
-#"${IP6T}" -A OUTPUT -o eth0 -p tcp --sport 1024:65535 --dport 25 -m conntrack \
-#    --ctstate NEW,ESTABLISHED -j ACCEPT
+"${IP6T}" -A INPUT -i eth0 -p tcp --sport 25 --dport 1024:65535 -m conntrack \
+    --ctstate NEW,ESTABLISHED -j ACCEPT
+"${IP6T}" -A OUTPUT -o eth0 -p tcp --sport 1024:65535 --dport 25 -m conntrack \
+    --ctstate NEW,ESTABLISHED -j ACCEPT
 
 # Allow rsync from a specific network
 #"${IP6T}" -A INPUT -i eth0 -p tcp -s 192.168.101.0/24 --dport 873 \

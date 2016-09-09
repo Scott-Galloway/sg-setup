@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# Original Author: Jim McKibben
-# Modified: Scott Galloway
+# Scott Galloway
 # AutoShun.org IPTables Blocklist Importer
 
 set -o errexit
