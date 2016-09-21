@@ -2,6 +2,7 @@ filetype off
 call pathogen#infect()
 filetype plugin indent on
 
+autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 set nocompatible
 
 set modelines=0
@@ -26,6 +27,7 @@ set ruler
 set backspace=indent,eol,start
 set laststatus=2
 set undofile
+set relativenumber
 set number
 
 "Syntastic Settings
@@ -66,4 +68,3 @@ syntax on
 autocmd vimenter * NERDTree
 
 let NERDTreeShowHidden=1
-let NERDTreeShowBookmarks=1

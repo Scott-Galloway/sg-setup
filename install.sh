@@ -40,6 +40,9 @@ fi
 # Run git config script
 "${__DIR}"/git.sh
 
+# Replace .bashrc
+cp "${__DIR}"/.bashrc ~/
+
 # Replace .vim files
 cp -r "${__DIR}"/vim/.vim/ ~/
 cp -r "${__DIR}"/vim/.vimrc ~/
@@ -54,15 +57,17 @@ mkdir -p ~/.vim/autoload ~/.vim/bundle && \
 # Install NERDTree for VIM
 cd ~/.vim/bundle
 if [[ -d nerdtree ]]; then
-    :
+    rm -rf nerdtree
+    git clone https://github.com/scrooloose/nerdtree.git
 else
-git clone https://github.com/scrooloose/nerdtree.git
+    git clone https://github.com/scrooloose/nerdtree.git
 fi
 
 if [[ -d syntastic ]]; then
-    :
+    rm -rf syntastic
+    git clone https://github.com/scrooloose/syntastic.git
 else
-git clone https://github.com/scrooloose/syntastic.git || true
+    git clone https://github.com/scrooloose/syntastic.git
 fi
 
 # Setup screenrc
@@ -73,11 +78,11 @@ cp "${__DIR}"/screen/.screenrc2 ~/
 #should check this later to make sure desktop is being run not server and gnome is the desk-env
 
 # Load Ubuntu Desktop sepcific configurations 
-if [[ "$(lsb_release -d)" = *"Ubuntu 15.10"* ]]; then
+if [[ "$(lsb_release -d)" = *"Ubuntu 15.10*" ]]; then
     mkdir -p ~/.config/autostart/
     cp -r "${__DIR}"/config/autostart/gnome-terminal.desktop ~/.config/autostart/gnome-terminal.desktop
     dconf load /org/gnome/terminal/legacy/profiles:/ < "${__DIR}"/gnome-terminal-dconf.profile
-elif [[ "$(lsb_release -d)" = *"Ubuntu 14.04"* ]]; then
+elif [[ "$(lsb_release -d)" = *"Ubuntu 14.04*" ]]; then
     mkdir -p ~/.config/autostart/
     cp -r "${__DIR}"/config/autostart/gnome-terminal.desktop ~/.config/autostart/gnome-terminal.desktop
     dconf load /org/gnome/terminal/legacy/profiles:/ <<< "${__DIR}"/gnome-terminal-dconf.profile
@@ -88,8 +93,9 @@ fi
 # pull public repositories for tools
 if [[ -d ~/development/tools/ ]]; then
     cd ~/development/tools
-    git pull
+    git pull origin master
 else
+    cd ~/development
     git clone https://github.com/scott-galloway/tools.git
 fi
 

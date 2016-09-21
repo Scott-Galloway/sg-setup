@@ -9,4 +9,7 @@ screen
 split
 focus
 screen
+#focus
+#select 2
+stuff "cat ~/git_token;^M"
 focus
